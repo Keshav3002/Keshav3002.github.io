@@ -1,20 +1,1060 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Keshav Tripathi Portfolio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keshav Tripathi — Developer & Researcher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&family=Sora:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #04080f;
+      --surface: #080d1a;
+      --cyan: #00f5d4;
+      --amber: #f5a623;
+      --muted: #2a3a52;
+      --text: #c8d8ef;
+      --dim: #6a85a8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── CANVAS BACKGROUND ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(4, 8, 15, 0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 245, 212, 0.08);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.12em;
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    .nav-links a:hover { color: var(--cyan); }
+
+    /* ── SECTIONS WRAPPER ── */
+    main { position: relative; z-index: 1; }
+
+    section {
+      min-height: 100vh;
+      padding: 7rem 4rem 5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 10rem;
+      padding-bottom: 4rem;
+      min-height: 100vh;
+    }
+
+    .hero-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4.5rem, 12vw, 11rem);
+      line-height: 0.88;
+      letter-spacing: 0.03em;
+      color: #fff;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+
+    .hero-name span { color: var(--cyan); }
+
+    .hero-subtitle {
+      margin-top: 2rem;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--dim);
+      max-width: 560px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+
+    .btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.9rem 2rem;
+      text-decoration: none;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      background: transparent;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: var(--cyan);
+      color: var(--bg);
+    }
+
+    .btn-ghost {
+      border-color: var(--muted);
+      color: var(--dim);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--text);
+      color: var(--text);
+      background: transparent;
+    }
+
+    .hero-meta {
+      margin-top: 4rem;
+      display: flex;
+      gap: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 1s forwards;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .hero-meta-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .hero-meta-value {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .section-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--cyan);
+      letter-spacing: 0.15em;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: 0.05em;
+      color: #fff;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--muted), transparent);
+    }
+
+    /* ── EXPERIENCE ── */
+    .exp-list { display: flex; flex-direction: column; gap: 0; }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2rem;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--muted);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s;
+    }
+
+    .exp-item.visible { opacity: 1; transform: translateY(0); }
+
+    .exp-item:last-child { border-bottom: none; }
+
+    .exp-date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      padding-top: 0.3rem;
+      line-height: 1.6;
+    }
+
+    .exp-date strong {
+      display: block;
+      color: var(--amber);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .exp-body {}
+
+    .exp-role {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .exp-company {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      letter-spacing: 0.15em;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .exp-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .exp-bullets li {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--dim);
+      padding-left: 1.2rem;
+      position: relative;
+    }
+
+    .exp-bullets li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--cyan);
+      font-size: 0.7rem;
+      top: 0.1rem;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--muted);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .project-card.visible { opacity: 1; transform: translateY(0); }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--cyan), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .project-card:hover {
+      border-color: rgba(0,245,212,0.35);
+      transform: translateY(-4px);
+    }
+
+    .project-card:hover::before { opacity: 1; }
+
+    .project-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1rem;
+    }
+
+    .project-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.07em;
+      color: #fff;
+      margin-bottom: 0.8rem;
+    }
+
+    .project-desc {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--dim);
+    }
+
+    .project-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.4rem;
+    }
+
+    .stack-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      padding: 0.3rem 0.7rem;
+      background: rgba(0,245,212,0.06);
+      border: 1px solid rgba(0,245,212,0.2);
+      color: var(--cyan);
+    }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+    }
+
+    .skill-group {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s;
+    }
+
+    .skill-group.visible { opacity: 1; transform: translateY(0); }
+
+    .skill-group-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1rem;
+      padding-bottom: 0.7rem;
+      border-bottom: 1px solid var(--muted);
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .skill-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.35rem 0.85rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--muted);
+      color: var(--text);
+      letter-spacing: 0.06em;
+      transition: all 0.2s;
+    }
+
+    .skill-pill:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: rgba(0,245,212,0.05);
+    }
+
+    /* ── CERTS ── */
+    .certs-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .cert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--muted);
+      transition: border-color 0.25s;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s;
+    }
+
+    .cert-item.visible { opacity: 1; transform: translateY(0); }
+    .cert-item:hover { border-color: rgba(245,166,35,0.4); }
+
+    .cert-icon {
+      font-size: 1.1rem;
+      margin-top: 0.1rem;
+      flex-shrink: 0;
+    }
+
+    .cert-name {
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: var(--text);
+    }
+
+    .cert-issuer {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--amber);
+      letter-spacing: 0.1em;
+      margin-top: 0.25rem;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      align-items: center;
+    }
+
+    .contact-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      letter-spacing: 0.04em;
+      color: #fff;
+      line-height: 0.95;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-headline span { color: var(--cyan); }
+
+    .contact-sub {
+      font-size: 1rem;
+      color: var(--dim);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    .contact-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .contact-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      padding: 0.8rem 1.8rem;
+      border: 1px solid var(--muted);
+      transition: all 0.25s;
+    }
+
+    .contact-link:hover {
+      color: var(--cyan);
+      border-color: var(--cyan);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      border-top: 1px solid var(--muted);
+    }
+
+    /* ── SCROLL INDICATOR ── */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeIn 1s 1.5s forwards;
+    }
+
+    .scroll-indicator span {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--cyan), transparent);
+      animation: scrollLine 1.5s ease-in-out infinite;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes scrollLine {
+      0%, 100% { transform: scaleY(0); transform-origin: top; }
+      50%       { transform: scaleY(1); transform-origin: top; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.2rem; }
+      section { padding: 6rem 1.5rem 4rem; }
+      .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+      .hero-meta { flex-wrap: wrap; gap: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Hello, I'm Keshav Tripathi</h1>
-    <p>Masters in Computer Science at Trinity College Dublin</p>
 
-    <h2>Projects</h2>
-    <ul>
-        <li>3D Human Model Regression from Video</li>
-        <li>RAG Chatbot using ChatGPT API</li>
-        <li>Spatio Temporal Computer Vision</li>
-    </ul>
+<canvas id="bg-canvas"></canvas>
 
-    <h2>Contact</h2>
-    <p>LinkedIn | GitHub</p>
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">KT</a>
+  <ul class="nav-links">
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section id="hero" style="position:relative;">
+    <p class="hero-tag">MSc CS · AR/VR · Data Science · AI Research</p>
+    <h1 class="hero-name">KESHAV<br><span>TRIPATHI</span></h1>
+    <p class="hero-subtitle">
+      Researcher and engineer exploring the intersection of spatial computing,
+      deep learning, and 3D vision — currently at Trinity College Dublin.
+    </p>
+    <div class="hero-cta">
+      <a href="mailto:kkeshavtripathi@gmail.com" class="btn">Get in Touch</a>
+      <a href="https://github.com/keshavtripathi" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Currently</span>
+        <span class="hero-meta-value">Trinity College Dublin</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Degree</span>
+        <span class="hero-meta-value">M.Sc Computer Science — AR/VR</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Location</span>
+        <span class="hero-meta-value">Dublin, Ireland</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Contact</span>
+        <span class="hero-meta-value">(+353) 892280136</span>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Experience</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="exp-list">
+
+      <div class="exp-item">
+        <div class="exp-date">
+          <strong>Work</strong>
+          Mar 2025 – Aug 2025
+        </div>
+        <div class="exp-body">
+          <div class="exp-role">Associate Data Engineer</div>
+          <div class="exp-company">OnePoint Consulting Ltd · Pune, India</div>
+          <ul class="exp-bullets">
+            <li>Extracted and consolidated raw data from multiple third-party sources across international solar plant locations using APIs and system integrations.</li>
+            <li>Performed data cleaning, transformation, and curation to ensure accuracy for downstream reporting pipelines.</li>
+            <li>Supported Power BI report and dashboard creation by delivering structured, high-quality datasets.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-date">
+          <strong>Internship</strong>
+          Sep 2024 – Oct 2024
+        </div>
+        <div class="exp-body">
+          <div class="exp-role">Gen AI Intern</div>
+          <div class="exp-company">Cratic AI · Gurugram, India</div>
+          <ul class="exp-bullets">
+            <li>Developed and optimized a chatbot using Retrieval-Augmented Generation (RAG) to enhance information retrieval and conversational quality.</li>
+            <li>Integrated OpenAI and Flask APIs to build scalable, real-time conversational systems.</li>
+            <li>Collaborated on the design and iterative improvement of chatbot interaction flows.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-date">
+          <strong>Research</strong>
+          Jan 2024 – Jun 2024
+        </div>
+        <div class="exp-body">
+          <div class="exp-role">Research Intern</div>
+          <div class="exp-company">IIT Jodhpur · Jodhpur, India</div>
+          <ul class="exp-bullets">
+            <li>Developed a model utilizing variational autoencoders for voxel-based data analysis to understand 3D image and video models vs. 2D computer vision.</li>
+            <li>Implemented SMPL-X and PMCE models for 3D human body estimation from video sequences.</li>
+            <li>Generated video data from AMASS dataset using 4D-Humans and PMCE; achieved a 10% reduction in MPJPE error.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-date">
+          <strong>Research</strong>
+          May 2022 – Jun 2022
+        </div>
+        <div class="exp-body">
+          <div class="exp-role">Research Intern</div>
+          <div class="exp-company">IIM Ahmedabad · Ahmedabad, India</div>
+          <ul class="exp-bullets">
+            <li>Conducted aspect-based sentiment analysis of financial news using NLP, comparing Transformer vs. SVM models.</li>
+            <li>Developed an NLP model leveraging Sentence Transformers and SVMs with TensorFlow/Keras.</li>
+            <li>Annotated financial datasets to facilitate Explainable AI applications.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-tag">Unreal Engine · Game Dev</div>
+        <div class="project-title">Futuristic Racing Game</div>
+        <p class="project-desc">
+          Third-person racing game in Unreal Engine featuring competitive races, ghost-car time trials, and AI opponents. Focused on realistic vehicle physics and drifting mechanics using Chaos vehicle system.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">Unreal Engine</span>
+          <span class="stack-tag">Chaos Physics</span>
+          <span class="stack-tag">Blueprint / C++</span>
+          <span class="stack-tag">AI Opponents</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-tag">Computer Vision · AR</div>
+        <div class="project-title">Monocular Depth Estimation</div>
+        <p class="project-desc">
+          Implemented a robust depth estimation pipeline using MiDaS with uncertainty-aware test-time inference. Designed confidence-guided depth refinement and applied results to AR occlusion for realistic object placement.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">MiDaS</span>
+          <span class="stack-tag">PyTorch</span>
+          <span class="stack-tag">AR Occlusion</span>
+          <span class="stack-tag">Laplacian Metrics</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-tag">3D Vision · Deep Learning</div>
+        <div class="project-title">3D Human Pose Regression</div>
+        <p class="project-desc">
+          Developed a model for accurately regenerating 3D human meshes from video. Achieved 10% reduction in MPJPE error using SMPL-X, LSTM, and CSE architectures based on the IM-NET methodology.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">PyTorch</span>
+          <span class="stack-tag">SMPL-X</span>
+          <span class="stack-tag">LSTM</span>
+          <span class="stack-tag">MeshLab</span>
+          <span class="stack-tag">MCubes</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-tag">NLP · Deep Learning</div>
+        <div class="project-title">Text Summarization</div>
+        <p class="project-desc">
+          Built a deep learning model using LSTM and Seq2Seq architecture to summarize news articles. Achieved 91% accuracy on the DailyMail News dataset from Kaggle.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">LSTM</span>
+          <span class="stack-tag">Seq2Seq</span>
+          <span class="stack-tag">Keras</span>
+          <span class="stack-tag">TensorFlow</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Skills</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-group">
+        <div class="skill-group-label">Languages</div>
+        <div class="skill-tags">
+          <span class="skill-pill">Python</span>
+          <span class="skill-pill">C++</span>
+          <span class="skill-pill">C#</span>
+          <span class="skill-pill">JavaScript</span>
+          <span class="skill-pill">Java</span>
+          <span class="skill-pill">PHP</span>
+          <span class="skill-pill">HTML/CSS</span>
+          <span class="skill-pill">C</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">ML / AI</div>
+        <div class="skill-tags">
+          <span class="skill-pill">PyTorch</span>
+          <span class="skill-pill">TensorFlow</span>
+          <span class="skill-pill">Keras</span>
+          <span class="skill-pill">NLTK</span>
+          <span class="skill-pill">Pandas</span>
+          <span class="skill-pill">NumPy</span>
+          <span class="skill-pill">Matplotlib</span>
+          <span class="skill-pill">RAG / LLMs</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">3D / Graphics</div>
+        <div class="skill-tags">
+          <span class="skill-pill">Unreal Engine</span>
+          <span class="skill-pill">OpenGL</span>
+          <span class="skill-pill">GLUT</span>
+          <span class="skill-pill">MCubes</span>
+          <span class="skill-pill">MeshLab</span>
+          <span class="skill-pill">SMPL-X</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Data & Cloud</div>
+        <div class="skill-tags">
+          <span class="skill-pill">Snowflake</span>
+          <span class="skill-pill">Boomi</span>
+          <span class="skill-pill">Power BI</span>
+          <span class="skill-pill">Apache Hadoop</span>
+          <span class="skill-pill">MongoDB</span>
+          <span class="skill-pill">PostgreSQL</span>
+          <span class="skill-pill">MySQL</span>
+          <span class="skill-pill">T-SQL</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Tools</div>
+        <div class="skill-tags">
+          <span class="skill-pill">Git / GitHub</span>
+          <span class="skill-pill">VS Code</span>
+          <span class="skill-pill">WSL</span>
+          <span class="skill-pill">Flask</span>
+          <span class="skill-pill">OpenAI API</span>
+          <span class="skill-pill">MS SQL Server</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section id="certifications">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Certifications</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="certs-list">
+      <div class="cert-item">
+        <div class="cert-icon">◈</div>
+        <div>
+          <div class="cert-name">Associate Integration Developer</div>
+          <div class="cert-issuer">Boomi · Mar 2025</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">◈</div>
+        <div>
+          <div class="cert-name">Natural Language Processing in TensorFlow</div>
+          <div class="cert-issuer">DeepLearning.AI / Coursera · Jul 2023</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">◈</div>
+        <div>
+          <div class="cert-name">Convolutional Neural Networks in TensorFlow</div>
+          <div class="cert-issuer">DeepLearning.AI / Coursera · Jul 2023</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">◈</div>
+        <div>
+          <div class="cert-name">Cloud ML Engineering and MLOps</div>
+          <div class="cert-issuer">Duke University / Coursera · Jan 2023</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">◈</div>
+        <div>
+          <div class="cert-name">Database Foundation</div>
+          <div class="cert-issuer">Oracle Academy · Nov 2022</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">◈</div>
+        <div>
+          <div class="cert-name">AI-900 Azure AI Fundamentals</div>
+          <div class="cert-issuer">Microsoft · Jun 2022</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">◈</div>
+        <div>
+          <div class="cert-name">Python Data Structures</div>
+          <div class="cert-issuer">University of Michigan / Coursera · Jun 2022</div>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">◈</div>
+        <div>
+          <div class="cert-name">Using Databases with Python</div>
+          <div class="cert-issuer">University of Michigan / Coursera · May 2022</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="hero-tag" style="margin-bottom:1rem;">Let's build something together</p>
+    <h2 class="contact-headline">GET IN<br><span>TOUCH</span></h2>
+    <p class="contact-sub">
+      Open to research collaborations, internships, and interesting projects in AR/VR, 3D vision, and AI.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:kkeshavtripathi@gmail.com" class="contact-link">✉ Email</a>
+      <a href="https://linkedin.com/in/keshavtripathi" target="_blank" class="contact-link">LinkedIn ↗</a>
+      <a href="https://github.com/keshavtripathi" target="_blank" class="contact-link">GitHub ↗</a>
+      <a href="tel:+353892280136" class="contact-link">☎ Call</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Keshav Tripathi &nbsp;·&nbsp; Trinity College Dublin &nbsp;·&nbsp; kkeshavtripathi@gmail.com
+</footer>
+
+<script>
+  /* ── ANIMATED GRID CANVAS ── */
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initParticles() {
+    particles = [];
+    const count = Math.floor((W * H) / 14000);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 1.5 + 0.5,
+        alpha: Math.random() * 0.5 + 0.1
+      });
+    }
+  }
+
+  function drawGrid() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Faint grid
+    const step = 80;
+    ctx.strokeStyle = 'rgba(0, 245, 212, 0.03)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += step) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += step) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+
+    // Particles & connections
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 245, 212, ${p.alpha})`;
+      ctx.fill();
+    });
+
+    // Connect nearby particles
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0, 245, 212, ${0.08 * (1 - dist / 120)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(drawGrid);
+  }
+
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+  resize(); initParticles(); drawGrid();
+
+  /* ── SCROLL REVEAL ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.exp-item, .project-card, .skill-group, .cert-item')
+    .forEach(el => observer.observe(el));
+
+  /* ── PROJECT CARD STAGGER ── */
+  document.querySelectorAll('.project-card').forEach((card, i) => {
+    card.style.transitionDelay = `${i * 0.1}s`;
+  });
+</script>
 </body>
 </html>
