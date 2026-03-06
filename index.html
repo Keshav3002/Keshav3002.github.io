@@ -668,6 +668,80 @@
   );
   pointer-events: none;
 }
+
+    .slideshow {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: saturate(0.7) brightness(0.85);
+  transition: opacity 0.6s ease, filter 0.4s ease, transform 0.6s ease;
+  transform: scale(1.05);
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+.project-card:hover .slide.active {
+  filter: saturate(1) brightness(1);
+  transform: scale(1);
+}
+
+/* Dots */
+.slide-dots {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.4rem;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.project-card:hover .slide-dots { opacity: 1; }
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid rgba(0,245,212,0.4);
+  transition: background 0.3s;
+}
+
+.dot.active {
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+
+/* Counter */
+.slide-counter {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.8rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--cyan);
+  background: rgba(4, 8, 15, 0.6);
+  padding: 0.2rem 0.5rem;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.project-card:hover .slide-counter { opacity: 1; }
   </style>
 </head>
 <body>
@@ -831,25 +905,40 @@
       </div>
     </div>
 
-    <div class="project-card">
-      <div class="project-tag">Computer Vision · AR</div>
-      <div class="project-title">Monocular Depth Estimation</div>
-    
-      <div class="card-img-wrapper">
-        <img class="card-img" src="images/depth-estimation.png" alt="Monocular Depth Estimation screenshot" />
-        <div class="card-img-overlay"></div>
+    <div class="project-card" id="depth-card">
+  <div class="project-tag">Computer Vision · AR</div>
+  <div class="project-title">Monocular Depth Estimation</div>
+
+  <div class="card-img-wrapper">
+    <div class="slideshow">
+      <img class="slide active" src="images/depth-1.png" alt="Depth Estimation Step 1" />
+      <img class="slide" src="images/depth-2.png" alt="Depth Estimation Step 2" />
+      <img class="slide" src="images/depth-3.png" alt="Depth Estimation Step 3" />
+      <div class="card-img-overlay"></div>
+
+      <!-- Dot indicators -->
+      <div class="slide-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
       </div>
-    
-      <p class="project-desc">
-        Implemented a robust depth estimation pipeline using MiDaS with uncertainty-aware test-time inference. Designed confidence-guided depth refinement and applied results to AR occlusion for realistic object placement.
-      </p>
-      <div class="project-stack">
-        <span class="stack-tag">MiDaS</span>
-        <span class="stack-tag">PyTorch</span>
-        <span class="stack-tag">AR Occlusion</span>
-        <span class="stack-tag">Laplacian Metrics</span>
-      </div>
+
+      <!-- Slide counter -->
+      <div class="slide-counter"><span class="current-num">1</span> / 3</div>
     </div>
+  </div>
+
+  <p class="project-desc">
+    Implemented a robust depth estimation pipeline using MiDaS with uncertainty-aware test-time inference.
+    Designed confidence-guided depth refinement and applied results to AR occlusion for realistic object placement.
+  </p>
+  <div class="project-stack">
+    <span class="stack-tag">MiDaS</span>
+    <span class="stack-tag">PyTorch</span>
+    <span class="stack-tag">AR Occlusion</span>
+    <span class="stack-tag">Laplacian Metrics</span>
+  </div>
+</div>
     
     <div class="project-card">
       <div class="project-tag">3D Vision · Deep Learning</div>
@@ -1157,6 +1246,40 @@ document.querySelectorAll('.project-card').forEach(card => {
   card.addEventListener('mouseenter', () => video.play());
   card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
 });
+
+  /* ── DEPTH CARD SLIDESHOW ── */
+(function () {
+  const card = document.getElementById('depth-card');
+  if (!card) return;
+
+  const slides = card.querySelectorAll('.slide');
+  const dots   = card.querySelectorAll('.dot');
+  const counter = card.querySelector('.current-num');
+  let current = 0;
+  let timer = null;
+
+  function goTo(index) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = index % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    if (counter) counter.textContent = current + 1;
+  }
+
+  function startSlideshow() {
+    goTo(0); // always start from first on hover
+    timer = setInterval(() => goTo(current + 1), 1800);
+  }
+
+  function stopSlideshow() {
+    clearInterval(timer);
+    goTo(0);
+  }
+
+  card.addEventListener('mouseenter', startSlideshow);
+  card.addEventListener('mouseleave', stopSlideshow);
+})();
 </script>
 </body>
 </html>
