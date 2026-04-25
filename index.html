@@ -884,6 +884,40 @@
 
     <div class="projects-grid">
 
+    <div class="project-card">
+  <div class="project-tag">Unity · VR · Multiplayer</div>
+  <div class="project-title">VR Library</div>
+
+  <!-- IMAGE / SLIDESHOW (replace with your screenshots) -->
+  <div class="card-img-wrapper">
+    <div class="slideshow">
+      <img class="slide active" src="Images/vr1.png" alt="VR Library 1" />
+      <img class="slide" src="Images/vr2.png" alt="VR Library 2" />
+      <img class="slide" src="Images/vr3.png" alt="VR Library 3" />
+      <div class="card-img-overlay"></div>
+
+      <div class="slide-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+
+      <div class="slide-counter"><span class="current-num">1</span> / 3</div>
+    </div>
+  </div>
+
+  <p class="project-desc">
+    Multiplayer virtual reality library enabling shared reading and interaction across desktop and VR. Features synchronized environments, collaborative tools, and real-time content interaction for up to 20 users.
+  </p>
+
+  <div class="project-stack">
+    <span class="stack-tag">Unity</span>
+    <span class="stack-tag">C#</span>
+    <span class="stack-tag">Multiplayer Sync</span>
+    <span class="stack-tag">VR Interaction</span>
+    <span class="stack-tag">Python</span>
+  </div>
+</div>
     <div class="project-card" id="racing-card">
       <div class="project-tag">Unreal Engine · Game Dev</div>
       <div class="project-title">Futuristic Racing Game</div>
@@ -1274,6 +1308,41 @@ document.querySelectorAll('.project-card').forEach(card => {
 
   card.addEventListener('mouseenter', startSlideshow);
   card.addEventListener('mouseleave', stopSlideshow);
+})();
+  (function () {
+  const cards = document.querySelectorAll('.project-card');
+
+  cards.forEach(card => {
+    if (!card.querySelector('.slideshow') || card.id === "depth-card") return;
+
+    const slides = card.querySelectorAll('.slide');
+    const dots   = card.querySelectorAll('.dot');
+    const counter = card.querySelector('.current-num');
+    let current = 0;
+    let timer = null;
+
+    function goTo(index) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = index % slides.length;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+      if (counter) counter.textContent = current + 1;
+    }
+
+    function start() {
+      goTo(0);
+      timer = setInterval(() => goTo(current + 1), 2000);
+    }
+
+    function stop() {
+      clearInterval(timer);
+      goTo(0);
+    }
+
+    card.addEventListener('mouseenter', start);
+    card.addEventListener('mouseleave', stop);
+  });
 })();
 </script>
 </body>
